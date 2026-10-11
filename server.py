@@ -1,37 +1,44 @@
 from flask import Flask, request, jsonify
-from flask_socketio import SocketIO
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
-devices = {}
+commands = {}
+results = {}
 
 @app.route('/')
 def index():
     return 'OK'
 
-@app.route('/command', methods=['POST'])
+@app.route('/send', methods=['POST'])
 def send_command():
     data = request.json
-    device_id = data.get('device_id')
-    command = data.get('command')
-    if device_id in devices:
-        socketio.emit('execute', {'command': command}, room=devices[device_id])
-        return jsonify({'status': 'sent'})
-    return jsonify({'status': 'device not found'}), 404
+    device_id = data.get('device_id', 'default')
+    command = data.get('command', '')
+    commands[device_id] = command
+    return jsonify({'status': 'queued'})
 
-@socketio.on('register')
-def handle_register(data):
-    devices[data['device_id']] = request.sid
-    print(f"Device registered: {data['device_id']}")
+@app.route('/poll', methods=['GET'])
+def poll_command():
+    device_id = request.args.get('device_id', 'default')
+    if device_id in commands:
+        cmd = commands.pop(device_id)
+        return jsonify({'command': cmd})
+    return jsonify({'command': None})
 
-@socketio.on('disconnect')
-def handle_disconnect():
-    for did, sid in list(devices.items()):
-        if sid == request.sid:
-            del devices[did]
-            print(f"Device disconnected: {did}")
-            break
+@app.route('/result', methods=['POST'])
+def post_result():
+    data = request.json
+    device_id = data.get('device_id', 'default')
+    result = data.get('result', '')
+    results[device_id] = result
+    return jsonify({'status': 'ok'})
+
+@app.route('/getresult', methods=['GET'])
+def get_result():
+    device_id = request.args.get('device_id', 'default')
+    if device_id in results:
+        return jsonify({'result': results.pop(device_id)})
+    return jsonify({'result': None})
 
 if __name__ == '__main__':
-    socketio.run(app)
+    app.run()
