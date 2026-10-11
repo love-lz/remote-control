@@ -30,7 +30,7 @@ def ai_command():
         "Content-Type": "application/json"
     }
     payload = {
-        "model": "claude-sonnet-4-20250514",
+        "model": "【A克-Anti备-0.22】Claude-opus-4-6",
         "messages": [
             {"role": "system", "content": "You are a phone control assistant. When the user wants to check phone info, respond with exactly one of these commands: battery, storage, contacts, sms, calllog, all. Only respond with the command word, nothing else."},
             {"role": "user", "content": user_msg}
