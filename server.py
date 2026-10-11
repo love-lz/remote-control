@@ -4,8 +4,8 @@ import os
 
 app = Flask(__name__)
 @app.route('/')
-    def index():
-        return 'OK'
+def index():
+    return 'OK'
 app.config['SECRET_KEY'] = 'mm091102'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
