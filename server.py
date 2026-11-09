@@ -30,7 +30,7 @@ def ai_command():
         "Content-Type": "application/json"
     }
     payload = {
-        "model": "【A克-Anti备-0.22】Claude-opus-4-6",
+        "model": "deepseek-chat",
         "messages": [
             {"role": "system", "content": "You are a phone control assistant. When the user wants to check phone info, respond with exactly one of these commands: battery, storage, contacts, sms, calllog, all. Only respond with the command word, nothing else."},
             {"role": "user", "content": user_msg}
@@ -82,4 +82,4 @@ def get_result():
     return jsonify({'result': None})
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
