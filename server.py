@@ -1,16 +1,16 @@
 import os
 from flask import Flask, request, jsonify
 import requests as req
-import time
 
 app = Flask(__name__)
 
 API_KEY = "lz1102mm"
-AI_API_KEY = "sk-kmA2rtd2OE4eoIcCX4kK0KRZ7Z0bIXTqbw45XWcm9Y6JNp5W"
-AI_API_URL = "https://noir.blacknoir.cn/v1/chat/completions"
+AI_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "sk-0ec9e7b66f6547d5b2561b558ab1f17f")
+AI_API_URL = "https://api.deepseek.com/chat/completions"
 
 commands = {}
 results = {}
+battery_info = {}
 
 def check_auth():
     key = request.headers.get("X-API-Key", "")
@@ -19,6 +19,25 @@ def check_auth():
 @app.route('/')
 def index():
     return 'OK'
+
+@app.route('/ping', methods=['GET'])
+def ping():
+    return 'pong'
+
+@app.route('/battery', methods=['POST'])
+def receive_battery():
+    global battery_info
+    data = request.json
+    if data:
+        battery_info = data
+        return jsonify({'status': 'battery_updated'}), 200
+    return jsonify({'status': 'no_data'}), 400
+
+@app.route('/get_battery', methods=['GET'])
+def get_battery():
+    if not check_auth():
+        return jsonify({'status': 'unauthorized'}), 401
+    return jsonify({'battery': battery_info})
 
 @app.route('/ai', methods=['POST'])
 def ai_command():
