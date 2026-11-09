@@ -35,8 +35,6 @@ def receive_battery():
 
 @app.route('/get_battery', methods=['GET'])
 def get_battery():
-    if not check_auth():
-        return jsonify({'status': 'unauthorized'}), 401
     return jsonify({'battery': battery_info})
 
 @app.route('/ai', methods=['POST'])
