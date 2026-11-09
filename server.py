@@ -5,8 +5,8 @@ import requests as req
 app = Flask(__name__)
 
 API_KEY = "lz1102mm"
-AI_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "sk-0ec9e7b66f6547d5b2561b558ab1f17f")
-AI_API_URL = "https://api.deepseek.com/chat/completions"
+AI_API_KEY = "sk-6NhKMwdYoFl6Jb2kKIx4bEoQVdcIxBJav9IXgR1jNOWat42R"
+AI_API_URL = "https://api.nodexapi.it.com/v1/chat/completions"
 
 commands = {}
 results = {}
